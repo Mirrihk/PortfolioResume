@@ -1,0 +1,112 @@
+########################################
+# OS junk
+########################################
+Thumbs.db
+.DS_Store
+
+########################################
+# Visual Studio / .NET
+########################################
+.vs/
+[Bb]in/
+[Oo]bj/
+[Dd]ebug*/
+[Rr]elease*/
+artifacts/
+*.user
+*.suo
+*.sln.docstates
+*.userosscache
+*.ncb
+*.opendb
+*.VC.db
+*.ide
+
+# Test results & coverage (C#)
+TestResult*/
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+
+# Rider / VS Code
+.idea/
+.vscode/
+
+# User secrets (don’t commit local secrets)
+*.Secret.user
+appsettings.*.local.json
+
+########################################
+# Blazor / publish artifacts (generated)
+########################################
+wwwroot/_framework/
+wwwroot/service-worker-assets.js
+wwwroot/service-worker.published.js
+
+########################################
+# Node / Firebase (your existing rules)
+########################################
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+firebase-debug.log*
+firebase-debug.*.log*
+
+# Firebase cache
+.firebase/
+
+# Firebase config
+# .firebaserc   # <- keep commented if team shares same Firebase project
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Instrumented libs
+lib-cov
+
+# Coverage directory (JS)
+coverage
+.nyc_output
+
+# Grunt
+.grunt
+
+# Bower
+bower_components
+
+# node-waf
+.lock-wscript
+
+# Compiled binary addons
+build/Release
+
+# Dependencies
+node_modules/
+
+# Optional npm cache
+.npm
+
+# ESLint cache
+.eslintcache
+
+# REPL history
+.node_repl_history
+
+# npm pack output
+*.tgz
+
+# Yarn Integrity
+.yarn-integrity
+
+# dotenv
+.env
+
+# dataconnect generated files
+.dataconnect

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Portfolio-Seb</title>
+    <base href="/" />
+
+    <!-- Blazor app CSS -->
+    <link rel="stylesheet" href="css/global.css" />
+    <link rel="stylesheet" href="css/layout.css" />
+    <link rel="stylesheet" href="css/components.css" />
+    <link rel="stylesheet" href="css/skills.css" />
+    <link rel="stylesheet" href="css/forms.css" />
+    <link rel="stylesheet" href="css/error.css" />
+</head>
+<body style="margin:0; padding:0; background-color:#000;">
+
+    <!-- Blazor loading UI -->
+    <div id="app">
+        <svg class="loading-progress">
+            <circle r="40%" cx="50%" cy="50%" />
+            <circle r="40%" cx="50%" cy="50%" />
+        </svg>
+        <div class="loading-progress-text"></div>
+    </div>
+
+    <!-- Blazor error UI -->
+    <div id="blazor-error-ui">
+        An unhandled error has occurred.
+        <a href="." class="reload">Reload</a>
+        <span class="dismiss">🗙</span>
+    </div>
+
+    <!-- Firebase SDKs - Using the versions provided by the user (10.12.2) -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script> <!-- Added Firestore SDK -->
+    <!-- Firebase Initialization and Auth setup -->
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyD5zDDoras1a77f1c3-GZDE4FaCk5uAl6s",
+            authDomain: "sebastian-ccf8e.firebaseapp.com",
+            projectId: "sebastian-ccf8e",
+            appId: "sebastian-ccf8e",
+            // Optional: Add storageBucket and messagingSenderId if they are part of your Firebase project config
+            // storageBucket: "YOUR_PROJECT_ID.appspot.com",
+            // messagingSenderId: "YOUR_MESSAGING_SENDER_ID"
+        };
+
+        // Initialize Firebase App
+        const app = firebase.initializeApp(firebaseConfig);
+
+        // Expose Firebase instances to the global window object.
+        // This is crucial for Blazor.Firebase.JS NuGet packages to work correctly
+        // when they try to access firebase.app(), firebase.auth(), firebase.firestore().
+        window.firebaseApp = app;
+        window.firebaseAuth = firebase.auth();
+        window.firebaseFirestore = firebase.firestore(); // Expose Firestore instance
+
+        // User's custom authentication provider for Blazor JS Interop
+        // This object provides specific login/logout methods via JS Interop.
+        window.authProvider = {
+            loginWithGoogle: async () => {
+                const provider = new firebase.auth.GoogleAuthProvider();
+                try {
+                    const result = await firebase.auth().signInWithPopup(provider);
+                    const user = result.user;
+                    localStorage.setItem("isLoggedIn", "true");
+                    localStorage.setItem("username", user.displayName || user.email || user.uid);
+                    return user.displayName || user.email || user.uid;
+                } catch (error) {
+                    console.error("Google login failed:", error);
+                    // Return null or throw error for Blazor to handle specific failure cases
+                    return null;
+                }
+            },
+            loginWithGitHub: async () => {
+                const provider = new firebase.auth.GithubAuthProvider();
+                try {
+                    const result = await firebase.auth().signInWithPopup(provider);
+                    const user = result.user;
+                    localStorage.setItem("isLoggedIn", "true");
+                    localStorage.setItem("username", user.displayName || user.email || user.uid);
+                    return user.displayName || user.email || user.uid;
+                } catch (error) {
+                    console.error("GitHub login failed:", error);
+                    return null;
+                }
+            },
+            loginAnonymously: async () => {
+                try {
+                    await firebase.auth().signInAnonymously();
+                    localStorage.setItem("isLoggedIn", "true");
+                    localStorage.setItem("username", "Anonymous");
+                    return "Anonymous";
+                } catch (error) {
+                    console.error("Anonymous login failed:", error);
+                    return null;
+                }
+            },
+            logout: () => {
+                firebase.auth().signOut()
+                    .then(() => {
+                        localStorage.removeItem("isLoggedIn");
+                        localStorage.removeItem("username");
+                        console.log("Signed out successfully.");
+                    })
+                    .catch((error) => {
+                        console.error("Logout failed:", error);
+                    });
+            },
+            // Helper function for Blazor to get the current user's display name
+            getCurrentUserDisplayName: () => {
+                const user = firebase.auth().currentUser;
+                return user ? (user.displayName || user.email || user.uid) : null;
+            }
+        };
+
+        // Listen for Firebase Auth state changes and update localStorage accordingly.
+        // This ensures localStorage reflects the true authentication state.
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                localStorage.setItem("isLoggedIn", "true");
+                localStorage.setItem("username", user.displayName || user.email || user.uid);
+            } else {
+                localStorage.removeItem("isLoggedIn");
+                localStorage.removeItem("username");
+            }
+            // You could also dispatch a custom event here (e.g., 'firebaseAuthStateChanged')
+            // for Blazor components to listen to, if needed for more immediate UI updates.
+        });
+    </script>
+
+    <!-- Boot Blazor only after all core Firebase objects are defined -->
+    <script>
+        (function startBlazor() {
+            // Check for the presence of the core Firebase instances
+            if (window.firebaseApp && window.firebaseAuth && window.firebaseFirestore) {
+                const script = document.createElement("script");
+                script.src = "_framework/blazor.webassembly.js";
+                document.body.appendChild(script);
+            } else {
+                // If not all Firebase objects are ready, retry after a short delay
+                setTimeout(startBlazor, 50);
+            }
+        })();
+    </script>
+
+</body>
+</html>

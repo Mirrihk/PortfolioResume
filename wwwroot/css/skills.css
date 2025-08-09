@@ -1,0 +1,23 @@
+﻿/* ==== Skills Section ==== */
+.skills {
+    list-style: none;
+    padding: 0;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+}
+
+    .skills li {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        font-size: 1rem;
+        color: #9ed1d1;
+    }
+
+        .skills li::before {
+            content: "•";
+            color: #9ed1d1;
+        }

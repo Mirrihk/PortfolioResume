@@ -1,0 +1,66 @@
+﻿@page "/signup"
+@layout MainLayout
+@inject NavigationManager Nav
+@inject IJSRuntime JS
+
+<PageTitle>Sign Up</PageTitle>
+
+<div class="page-container">
+    <div class="responsive-panel">
+        <h2>Create an Account</h2>
+
+        <input @bind="Username" placeholder="Username" />
+        <input @bind="Email" placeholder="Email" />
+        <input @bind="Password" type="password" placeholder="Password" />
+        <input @bind="ConfirmPassword" type="password" placeholder="Confirm Password" />
+
+        @if (!string.IsNullOrEmpty(ErrorMessage))
+        {
+            <p class="error">@ErrorMessage</p>
+        }
+
+        <button @onclick="HandleSignup">Sign Up</button>
+
+        <div class="alt-options">
+            <button @onclick="GoToLogin">Login</button>
+            <button @onclick="GoToGuest">Browse as Guest</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    private string Username { get; set; } = string.Empty;
+    private string Email { get; set; } = string.Empty;
+    private string Password { get; set; } = string.Empty;
+    private string ConfirmPassword { get; set; } = string.Empty;
+    private string ErrorMessage { get; set; } = string.Empty;
+
+    private async Task HandleSignup()
+    {
+        if (new[] { Username, Email, Password, ConfirmPassword }
+                .Any(string.IsNullOrWhiteSpace))
+        {
+            ErrorMessage = "All fields are required.";
+            return;
+        }
+        if (Password != ConfirmPassword)
+        {
+            ErrorMessage = "Passwords do not match.";
+            return;
+        }
+
+        await JS.InvokeVoidAsync("localStorage.setItem", "username", Username);
+        await JS.InvokeVoidAsync("localStorage.setItem", "password", Password);
+        await JS.InvokeVoidAsync("localStorage.setItem", "isLoggedIn", "true");
+        Nav.NavigateTo("/");
+    }
+
+    private void GoToLogin() => Nav.NavigateTo("/password");
+    private void GoToGuest() => Nav.NavigateTo("/?guest=true");
+
+    protected override async Task OnInitializedAsync()
+    {
+        await JS.InvokeVoidAsync("localStorage.removeItem", "isLoggedIn");
+        await JS.InvokeVoidAsync("localStorage.removeItem", "username");
+    }
+}
