@@ -61,59 +61,33 @@
         // User's custom authentication provider for Blazor JS Interop
         // This object provides specific login/logout methods via JS Interop.
         window.authProvider = {
-            loginWithGoogle: async () => {
-                const provider = new firebase.auth.GoogleAuthProvider();
+            async loginWithGoogle() {
                 try {
-                    const result = await firebase.auth().signInWithPopup(provider);
-                    const user = result.user;
-                    localStorage.setItem("isLoggedIn", "true");
-                    localStorage.setItem("username", user.displayName || user.email || user.uid);
-                    return user.displayName || user.email || user.uid;
-                } catch (error) {
-                    console.error("Google login failed:", error);
-                    // Return null or throw error for Blazor to handle specific failure cases
-                    return null;
-                }
+                    await firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
+                    return true;
+                } catch (e) { console.error(e); return false; }
             },
-            loginWithGitHub: async () => {
-                const provider = new firebase.auth.GithubAuthProvider();
+            async loginWithGitHub() {
                 try {
-                    const result = await firebase.auth().signInWithPopup(provider);
-                    const user = result.user;
-                    localStorage.setItem("isLoggedIn", "true");
-                    localStorage.setItem("username", user.displayName || user.email || user.uid);
-                    return user.displayName || user.email || user.uid;
-                } catch (error) {
-                    console.error("GitHub login failed:", error);
-                    return null;
-                }
+                    await firebase.auth().signInWithPopup(new firebase.auth.GithubAuthProvider());
+                    return true;
+                } catch (e) { console.error(e); return false; }
             },
-            loginAnonymously: async () => {
+            async loginAnonymously() {
                 try {
                     await firebase.auth().signInAnonymously();
-                    localStorage.setItem("isLoggedIn", "true");
-                    localStorage.setItem("username", "Anonymous");
-                    return "Anonymous";
-                } catch (error) {
-                    console.error("Anonymous login failed:", error);
-                    return null;
-                }
+                    return true;
+                } catch (e) { console.error(e); return false; }
             },
-            logout: () => {
-                firebase.auth().signOut()
-                    .then(() => {
-                        localStorage.removeItem("isLoggedIn");
-                        localStorage.removeItem("username");
-                        console.log("Signed out successfully.");
-                    })
-                    .catch((error) => {
-                        console.error("Logout failed:", error);
-                    });
+            async logout() {
+                try { await firebase.auth().signOut(); return true; }
+                catch (e) { console.error(e); return false; }
             },
-            // Helper function for Blazor to get the current user's display name
-            getCurrentUserDisplayName: () => {
-                const user = firebase.auth().currentUser;
-                return user ? (user.displayName || user.email || user.uid) : null;
+            // prevents “subscribeAuthState undefined” if your C# tries to call it
+            subscribeAuthState() { return true; },
+            getCurrentUserDisplayName() {
+                const u = firebase.auth().currentUser;
+                return u ? (u.displayName || u.email || u.uid) : null;
             }
         };
 
