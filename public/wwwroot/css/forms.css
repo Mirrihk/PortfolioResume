@@ -17,16 +17,16 @@
     padding: 0.75rem;
     border: none;
     border-radius: 8px;
-    background-color: #5c6bc0;
+    background: linear-gradient(135deg, #555555, #333333);
     color: white;
     font-size: calc(1rem + 0.2vw);
     font-weight: bold;
     cursor: pointer;
-    transition: background-color 0.2s ease-in-out;
+    transition: background 0.2s ease-in-out;
 }
 
     .responsive-panel button:hover {
-        background-color: #3f51b5;
+        background: linear-gradient(135deg, #666666, #444444);
     }
 
 .form-floating > .form-control::placeholder {
