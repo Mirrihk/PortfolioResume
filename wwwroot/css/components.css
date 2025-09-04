@@ -53,12 +53,6 @@
     color: #e7e7e7;
 }
 
-/* Error text */
-.error {
-    color: #ff4d4d;
-    font-weight: bold;
-}
-
 /* ==== Login Panel Layout ==== */
 .login-layout {
     display: flex;
