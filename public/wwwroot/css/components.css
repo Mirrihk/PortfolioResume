@@ -5,7 +5,7 @@
     border: none;
     border-radius: 6px;
     background: linear-gradient(135deg, #555555, #333333);
-    color: #fff;
+    color: #000000;
     font-size: 1rem;
     font-weight: bold;
     cursor: pointer;
@@ -51,12 +51,6 @@
     font-weight: bold;
     font-size: 1rem;
     color: #e7e7e7;
-}
-
-/* Error text */
-.error {
-    color: #ff4d4d;
-    font-weight: bold;
 }
 
 /* ==== Login Panel Layout ==== */
