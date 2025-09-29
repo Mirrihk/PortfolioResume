@@ -6,84 +6,89 @@
     <title>Portfolio-Seb</title>
     <base href="/" />
 
-    <!-- Blazor app CSS -->
+    <!-- App CSS -->
     <link rel="stylesheet" href="css/global.css" />
     <link rel="stylesheet" href="css/layout.css" />
     <link rel="stylesheet" href="css/components.css" />
     <link rel="stylesheet" href="css/skills.css" />
     <link rel="stylesheet" href="css/forms.css" />
     <link rel="stylesheet" href="css/error.css" />
+    <link rel="stylesheet" href="css/loader.css" />
+
+    <!-- NProgress (top loading bar) -->
+    <link rel="stylesheet" href="https://unpkg.com/nprogress@0.2.0/nprogress.css">
+    <!-- Optional: provide your own favicon to avoid 404 -->
+    <!-- <link rel="icon" href="/favicon.ico"> -->
 </head>
 <body style="margin:0; padding:0; background-color:#000;">
 
-    <!-- Blazor loading UI -->
-    <div id="app">
-        <svg class="loading-progress">
-            <circle r="40%" cx="50%" cy="50%" />
-            <circle r="40%" cx="50%" cy="50%" />
-        </svg>
-        <div class="loading-progress-text"></div>
+    <!-- Blazor mount point (KEEP THIS EMPTY, DO NOT REMOVE) -->
+    <div id="app"></div>
+
+    <!-- Loader overlay (remove THIS after Blazor starts) -->
+    <div id="loader" class="skeleton-screen" role="status" aria-live="polite" aria-busy="true">
+        <div class="skeleton-card">
+            <div class="flex">
+                <div class="shimmer circle" aria-hidden="true"></div>
+                <div style="flex:1">
+                    <div class="shimmer row wide" style="width: 60%;" aria-hidden="true"></div>
+                    <div class="shimmer row" style="width: 40%;" aria-hidden="true"></div>
+                </div>
+            </div>
+            <div class="shimmer row wide" style="width: 100%; margin-top: 20px;" aria-hidden="true"></div>
+            <div class="shimmer row" style="width: 90%;" aria-hidden="true"></div>
+            <div class="shimmer row" style="width: 80%;" aria-hidden="true"></div>
+            <div class="muted">Loading Portfolio-Seb… preparing WebAssembly & Firebase.</div>
+            <div class="tips">Tip: You can sign in with Google or GitHub once the app is ready.</div>
+        </div>
     </div>
 
-    <!-- Blazor error UI -->
-    <div id="blazor-error-ui">
+    <!-- Blazor error UI (shown if boot fails) -->
+    <div id="blazor-error-ui" style="display:none">
         An unhandled error has occurred.
         <a href="." class="reload">Reload</a>
         <span class="dismiss">🗙</span>
     </div>
 
-    <!-- Firebase SDKs - Using the versions provided by the user (10.12.2) -->
+    <!-- Firebase SDKs (compat) -->
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script> <!-- Added Firestore SDK -->
-    <!-- Firebase Initialization and Auth setup -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+    <!-- Blazor runtime (load once, do not autostart) -->
+    <script src="_framework/blazor.webassembly.js" autostart="false"></script>
+
+    <!-- Firebase init -->
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyD5zDDoras1a77f1c3-GZDE4FaCk5uAl6s",
             authDomain: "sebastian-ccf8e.firebaseapp.com",
             projectId: "sebastian-ccf8e",
-            appId: "sebastian-ccf8e",
-            // Optional: Add storageBucket and messagingSenderId if they are part of your Firebase project config
-            // storageBucket: "YOUR_PROJECT_ID.appspot.com",
-            // messagingSenderId: "YOUR_MESSAGING_SENDER_ID"
+            appId: "sebastian-ccf8e"
         };
 
-        // Initialize Firebase App
         const app = firebase.initializeApp(firebaseConfig);
-
-        // Expose Firebase instances to the global window object.
-        // This is crucial for Blazor.Firebase.JS NuGet packages to work correctly
-        // when they try to access firebase.app(), firebase.auth(), firebase.firestore().
         window.firebaseApp = app;
         window.firebaseAuth = firebase.auth();
-        window.firebaseFirestore = firebase.firestore(); // Expose Firestore instance
+        window.firebaseFirestore = firebase.firestore();
 
-        // User's custom authentication provider for Blazor JS Interop
-        // This object provides specific login/logout methods via JS Interop.
         window.authProvider = {
             async loginWithGoogle() {
-                try {
-                    await firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
-                    return true;
-                } catch (e) { console.error(e); return false; }
+                try { await firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider()); return true; }
+                catch (e) { console.error(e); return false; }
             },
             async loginWithGitHub() {
-                try {
-                    await firebase.auth().signInWithPopup(new firebase.auth.GithubAuthProvider());
-                    return true;
-                } catch (e) { console.error(e); return false; }
+                try { await firebase.auth().signInWithPopup(new firebase.auth.GithubAuthProvider()); return true; }
+                catch (e) { console.error(e); return false; }
             },
             async loginAnonymously() {
-                try {
-                    await firebase.auth().signInAnonymously();
-                    return true;
-                } catch (e) { console.error(e); return false; }
+                try { await firebase.auth().signInAnonymously(); return true; }
+                catch (e) { console.error(e); return false; }
             },
             async logout() {
                 try { await firebase.auth().signOut(); return true; }
                 catch (e) { console.error(e); return false; }
             },
-            // prevents “subscribeAuthState undefined” if your C# tries to call it
             subscribeAuthState() { return true; },
             getCurrentUserDisplayName() {
                 const u = firebase.auth().currentUser;
@@ -91,8 +96,6 @@
             }
         };
 
-        // Listen for Firebase Auth state changes and update localStorage accordingly.
-        // This ensures localStorage reflects the true authentication state.
         firebase.auth().onAuthStateChanged((user) => {
             if (user) {
                 localStorage.setItem("isLoggedIn", "true");
@@ -101,25 +104,55 @@
                 localStorage.removeItem("isLoggedIn");
                 localStorage.removeItem("username");
             }
-            // You could also dispatch a custom event here (e.g., 'firebaseAuthStateChanged')
-            // for Blazor components to listen to, if needed for more immediate UI updates.
         });
     </script>
 
-    <!-- Boot Blazor only after all core Firebase objects are defined -->
+    <!-- NProgress JS + single guarded boot -->
+    <script src="https://unpkg.com/nprogress@0.2.0/nprogress.js"></script>
     <script>
-        (function startBlazor() {
-            // Check for the presence of the core Firebase instances
-            if (window.firebaseApp && window.firebaseAuth && window.firebaseFirestore) {
-                const script = document.createElement("script");
-                script.src = "_framework/blazor.webassembly.js";
-                document.body.appendChild(script);
-            } else {
-                // If not all Firebase objects are ready, retry after a short delay
-                setTimeout(startBlazor, 50);
+        // Show the top bar immediately
+        if (window.NProgress) { NProgress.start(); NProgress.set(0.35); }
+
+        // Surface errors instead of silent black screen
+        window.addEventListener('error', (e) => {
+            console.error('Window error:', e.error || e.message);
+            document.getElementById('blazor-error-ui').style.display = 'block';
+        });
+        window.addEventListener('unhandledrejection', (e) => {
+            console.error('Unhandled promise rejection:', e.reason);
+            document.getElementById('blazor-error-ui').style.display = 'block';
+        });
+
+        (function bootOnce() {
+            if (window.__blazorBooted) return; // hard guard
+            window.__blazorBooted = true;
+
+            function depsReady() {
+                return !!(window.firebaseApp && window.firebaseAuth && window.firebaseFirestore);
             }
+
+            (function waitForFirebase() {
+                if (!depsReady()) { setTimeout(waitForFirebase, 40); return; }
+
+                (async () => {
+                    try {
+                        if (window.NProgress) NProgress.inc(0.15);
+                        console.log('Starting Blazor…');
+                        await Blazor.start();
+                        console.log('Blazor started.');
+                    } catch (err) {
+                        console.error('Blazor.start() failed:', err);
+                        document.getElementById('blazor-error-ui').style.display = 'block';
+                    } finally {
+                        const loader = document.getElementById("loader");
+                        loader?.setAttribute("aria-busy", "false");
+                        if (window.NProgress) NProgress.done();
+                        // Remove ONLY the loader overlay (keep #app)
+                        setTimeout(() => loader?.remove(), 150);
+                    }
+                })();
+            })();
         })();
     </script>
-
 </body>
 </html>

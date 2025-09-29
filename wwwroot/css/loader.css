@@ -1,0 +1,86 @@
+﻿/* Loader styles for Portfolio-Seb */
+.skeleton-screen {
+    position: fixed;
+    inset: 0;
+    background: #0b0b0b;
+    display: grid;
+    place-items: center;
+    z-index: 9999;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif;
+}
+
+.skeleton-card {
+    width: min(92vw, 720px);
+    border-radius: 16px;
+    padding: 28px;
+    background: #111;
+    box-shadow: 0 10px 30px rgba(0,0,0,.35);
+    color: #cfcfcf;
+}
+
+.shimmer {
+    position: relative;
+    overflow: hidden;
+    background: #1a1a1a;
+    border-radius: 10px;
+}
+
+    .shimmer::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        transform: translateX(-100%);
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,.08), transparent);
+        animation: shimmer 1.5s infinite;
+    }
+
+@keyframes shimmer {
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+.row {
+    height: 16px;
+    margin: 10px 0;
+}
+
+    .row.wide {
+        height: 24px;
+        margin-top: 14px;
+    }
+
+.circle {
+    width: 84px;
+    height: 84px;
+    border-radius: 50%;
+    margin-right: 18px;
+}
+
+.flex {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.muted {
+    opacity: .75;
+    font-size: .9rem;
+    margin-top: 8px;
+}
+
+.tips {
+    margin-top: 16px;
+    font-size: .85rem;
+    opacity: .7;
+}
+
+/* NProgress tweak to match dark theme */
+#nprogress .bar {
+    height: 3px;
+    background: #22d3ee;
+}
+
+#nprogress .peg {
+    box-shadow: 0 0 10px #22d3ee, 0 0 5px #22d3ee;
+}
