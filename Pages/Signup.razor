@@ -3,64 +3,109 @@
 @inject NavigationManager Nav
 @inject IJSRuntime JS
 
-<PageTitle>Sign Up</PageTitle>
+<PageTitle>Create Account | Sebastian Alvarez</PageTitle>
 
 <div class="page-container">
-    <div class="responsive-panel">
-        <h2>Create an Account</h2>
+    <div class="responsive-panel auth-form-panel">
+        <h1>Create an Account</h1>
+        <p class="subtitle">
+            Accounts are optional. Your password is handled securely by Firebase Authentication and is never stored by this site.
+        </p>
 
-        <input @bind="Username" placeholder="Username" />
-        <input @bind="Email" placeholder="Email" />
-        <input @bind="Password" type="password" placeholder="Password" />
-        <input @bind="ConfirmPassword" type="password" placeholder="Confirm Password" />
+        <label for="display-name">Display name</label>
+        <input id="display-name" @bind="DisplayName" autocomplete="name" placeholder="Your name" />
 
-        @if (!string.IsNullOrEmpty(ErrorMessage))
+        <label for="email">Email</label>
+        <input id="email" @bind="Email" type="email" autocomplete="email" placeholder="you@example.com" />
+
+        <label for="password">Password</label>
+        <input id="password" @bind="Password" type="password" autocomplete="new-password" placeholder="At least 6 characters" />
+
+        <label for="confirm-password">Confirm password</label>
+        <input id="confirm-password" @bind="ConfirmPassword" type="password" autocomplete="new-password" placeholder="Re-enter your password" />
+
+        @if (!string.IsNullOrWhiteSpace(ErrorMessage))
         {
-            <p class="error">@ErrorMessage</p>
+            <p class="error" role="alert">@ErrorMessage</p>
         }
 
-        <button @onclick="HandleSignup">Sign Up</button>
+        <button @onclick="HandleSignup" disabled="@IsSubmitting">
+            @(IsSubmitting ? "Creating account..." : "Create account")
+        </button>
 
         <div class="alt-options">
-            <button @onclick="GoToLogin">Login</button>
-            <button @onclick="GoToGuest">Browse as Guest</button>
+            <button @onclick="GoToLogin">Sign in</button>
+            <button @onclick="GoToPortfolio">Return to portfolio</button>
         </div>
     </div>
 </div>
 
 @code {
-    private string Username { get; set; } = string.Empty;
+    private string DisplayName { get; set; } = string.Empty;
     private string Email { get; set; } = string.Empty;
     private string Password { get; set; } = string.Empty;
     private string ConfirmPassword { get; set; } = string.Empty;
     private string ErrorMessage { get; set; } = string.Empty;
+    private bool IsSubmitting { get; set; }
 
     private async Task HandleSignup()
     {
-        if (new[] { Username, Email, Password, ConfirmPassword }
-                .Any(string.IsNullOrWhiteSpace))
+        ErrorMessage = string.Empty;
+
+        if (new[] { DisplayName, Email, Password, ConfirmPassword }.Any(string.IsNullOrWhiteSpace))
         {
             ErrorMessage = "All fields are required.";
             return;
         }
+
+        if (Password.Length < 6)
+        {
+            ErrorMessage = "Password must contain at least 6 characters.";
+            return;
+        }
+
         if (Password != ConfirmPassword)
         {
             ErrorMessage = "Passwords do not match.";
             return;
         }
 
-        await JS.InvokeVoidAsync("localStorage.setItem", "username", Username);
-        await JS.InvokeVoidAsync("localStorage.setItem", "password", Password);
-        await JS.InvokeVoidAsync("localStorage.setItem", "isLoggedIn", "true");
-        Nav.NavigateTo("/");
+        IsSubmitting = true;
+
+        try
+        {
+            var result = await JS.InvokeAsync<FirebaseAuthResult>(
+                "authProvider.createAccount",
+                Email.Trim(),
+                Password,
+                DisplayName.Trim());
+
+            if (result.Success)
+                Nav.NavigateTo("/", forceLoad: true);
+            else
+                ErrorMessage = string.IsNullOrWhiteSpace(result.Message)
+                    ? "The account could not be created."
+                    : result.Message;
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = "The account could not be created. Please try again.";
+            Console.WriteLine(ex);
+        }
+        finally
+        {
+            IsSubmitting = false;
+            Password = string.Empty;
+            ConfirmPassword = string.Empty;
+        }
     }
 
     private void GoToLogin() => Nav.NavigateTo("/password");
-    private void GoToGuest() => Nav.NavigateTo("/?guest=true");
+    private void GoToPortfolio() => Nav.NavigateTo("/");
 
-    protected override async Task OnInitializedAsync()
+    private sealed class FirebaseAuthResult
     {
-        await JS.InvokeVoidAsync("localStorage.removeItem", "isLoggedIn");
-        await JS.InvokeVoidAsync("localStorage.removeItem", "username");
+        public bool Success { get; set; }
+        public string? Message { get; set; }
     }
 }
