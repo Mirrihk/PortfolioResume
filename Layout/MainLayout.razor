@@ -1,10 +1,60 @@
 ﻿@using ResumePortfolio
 @using ResumePortfolio.Pages
-
-
 @using Microsoft.AspNetCore.Components
 @using Microsoft.AspNetCore.Components.Web
+@inject NavigationManager Nav
+@inject IJSRuntime JS
 
 @inherits LayoutComponentBase
 
-@Body
+<header class="site-header">
+    <a class="site-brand" href="/">Sebastian Alvarez</a>
+
+    <nav class="site-nav" aria-label="Primary navigation">
+        <a href="/">Portfolio</a>
+        <a href="https://github.com/Mirrihk" target="_blank" rel="noopener noreferrer">GitHub</a>
+
+        @if (IsSignedIn)
+        {
+            <span class="signed-in-user" title="Signed-in account">@DisplayName</span>
+            <button class="nav-auth-button" @onclick="SignOutAsync">Sign out</button>
+        }
+        else
+        {
+            <button class="nav-auth-button" @onclick="GoToSignIn">Sign in</button>
+        }
+    </nav>
+</header>
+
+<main>
+    @Body
+</main>
+
+@code {
+    private bool IsSignedIn;
+    private string DisplayName = "Account";
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+            return;
+
+        IsSignedIn = await JS.InvokeAsync<bool>("authProvider.isSignedIn");
+        var displayName = await JS.InvokeAsync<string?>("authProvider.getCurrentUserDisplayName");
+
+        if (!string.IsNullOrWhiteSpace(displayName))
+            DisplayName = displayName;
+
+        StateHasChanged();
+    }
+
+    private void GoToSignIn() => Nav.NavigateTo("/password");
+
+    private async Task SignOutAsync()
+    {
+        await JS.InvokeAsync<bool>("authProvider.logout");
+        IsSignedIn = false;
+        DisplayName = "Account";
+        Nav.NavigateTo("/");
+    }
+}
