@@ -3,10 +3,9 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Portfolio-Seb</title>
+    <title>Sebastian Alvarez | Portfolio</title>
     <base href="/" />
 
-    <!-- App CSS -->
     <link rel="stylesheet" href="css/global.css" />
     <link rel="stylesheet" href="css/layout.css" />
     <link rel="stylesheet" href="css/components.css" />
@@ -14,18 +13,11 @@
     <link rel="stylesheet" href="css/forms.css" />
     <link rel="stylesheet" href="css/error.css" />
     <link rel="stylesheet" href="css/loader.css" />
-
-    <!-- NProgress (top loading bar) -->
     <link rel="stylesheet" href="https://unpkg.com/nprogress@0.2.0/nprogress.css">
-    <!-- Optional: provide your own favicon to avoid 404 -->
-    <!-- <link rel="icon" href="/favicon.ico"> -->
 </head>
 <body style="margin:0; padding:0; background-color:#000;">
-
-    <!-- Blazor mount point (KEEP THIS EMPTY, DO NOT REMOVE) -->
     <div id="app"></div>
 
-    <!-- Loader overlay (remove THIS after Blazor starts) -->
     <div id="loader" class="skeleton-screen" role="status" aria-live="polite" aria-busy="true">
         <div class="skeleton-card">
             <div class="flex">
@@ -38,27 +30,21 @@
             <div class="shimmer row wide" style="width: 100%; margin-top: 20px;" aria-hidden="true"></div>
             <div class="shimmer row" style="width: 90%;" aria-hidden="true"></div>
             <div class="shimmer row" style="width: 80%;" aria-hidden="true"></div>
-            <div class="muted">Loading Portfolio-Seb… preparing WebAssembly & Firebase.</div>
-            <div class="tips">Tip: You can sign in with Google or GitHub once the app is ready.</div>
+            <div class="muted">Loading Sebastian's portfolio…</div>
         </div>
     </div>
 
-    <!-- Blazor error UI (shown if boot fails) -->
     <div id="blazor-error-ui" style="display:none">
         An unhandled error has occurred.
         <a href="." class="reload">Reload</a>
         <span class="dismiss">🗙</span>
     </div>
 
-    <!-- Firebase SDKs (compat) -->
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-
-    <!-- Blazor runtime (load once, do not autostart) -->
     <script src="_framework/blazor.webassembly.js" autostart="false"></script>
 
-    <!-- Firebase init -->
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyD5zDDoras1a77f1c3-GZDE4FaCk5uAl6s",
@@ -72,82 +58,117 @@
         window.firebaseAuth = firebase.auth();
         window.firebaseFirestore = firebase.firestore();
 
+        function friendlyAuthMessage(error) {
+            const messages = {
+                "auth/email-already-in-use": "An account already exists for this email.",
+                "auth/invalid-email": "Enter a valid email address.",
+                "auth/operation-not-allowed": "Email and password sign-up is not enabled yet.",
+                "auth/weak-password": "Choose a stronger password with at least 6 characters."
+            };
+
+            return messages[error?.code] || "Firebase could not complete the request.";
+        }
+
         window.authProvider = {
             async loginWithGoogle() {
-                try { await firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider()); return true; }
-                catch (e) { console.error(e); return false; }
+                try {
+                    await firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
+                    return true;
+                } catch (error) {
+                    console.error(error);
+                    return false;
+                }
             },
+
             async loginWithGitHub() {
-                try { await firebase.auth().signInWithPopup(new firebase.auth.GithubAuthProvider()); return true; }
-                catch (e) { console.error(e); return false; }
+                try {
+                    await firebase.auth().signInWithPopup(new firebase.auth.GithubAuthProvider());
+                    return true;
+                } catch (error) {
+                    console.error(error);
+                    return false;
+                }
             },
-            async loginAnonymously() {
-                try { await firebase.auth().signInAnonymously(); return true; }
-                catch (e) { console.error(e); return false; }
+
+            async createAccount(email, password, displayName) {
+                try {
+                    const credential = await firebase.auth()
+                        .createUserWithEmailAndPassword(email, password);
+
+                    if (credential.user && displayName) {
+                        await credential.user.updateProfile({ displayName });
+                    }
+
+                    return { success: true, message: null };
+                } catch (error) {
+                    console.error(error);
+                    return { success: false, message: friendlyAuthMessage(error) };
+                }
             },
+
             async logout() {
-                try { await firebase.auth().signOut(); return true; }
-                catch (e) { console.error(e); return false; }
+                try {
+                    await firebase.auth().signOut();
+                    return true;
+                } catch (error) {
+                    console.error(error);
+                    return false;
+                }
             },
-            subscribeAuthState() { return true; },
+
+            isSignedIn() {
+                return firebase.auth().currentUser !== null;
+            },
+
             getCurrentUserDisplayName() {
-                const u = firebase.auth().currentUser;
-                return u ? (u.displayName || u.email || u.uid) : null;
+                const user = firebase.auth().currentUser;
+                return user ? (user.displayName || user.email || "Account") : null;
             }
         };
-
-        firebase.auth().onAuthStateChanged((user) => {
-            if (user) {
-                localStorage.setItem("isLoggedIn", "true");
-                localStorage.setItem("username", user.displayName || user.email || user.uid);
-            } else {
-                localStorage.removeItem("isLoggedIn");
-                localStorage.removeItem("username");
-            }
-        });
     </script>
 
-    <!-- NProgress JS + single guarded boot -->
     <script src="https://unpkg.com/nprogress@0.2.0/nprogress.js"></script>
     <script>
-        // Show the top bar immediately
-        if (window.NProgress) { NProgress.start(); NProgress.set(0.35); }
+        if (window.NProgress) {
+            NProgress.start();
+            NProgress.set(0.35);
+        }
 
-        // Surface errors instead of silent black screen
-        window.addEventListener('error', (e) => {
-            console.error('Window error:', e.error || e.message);
+        window.addEventListener('error', (event) => {
+            console.error('Window error:', event.error || event.message);
             document.getElementById('blazor-error-ui').style.display = 'block';
         });
-        window.addEventListener('unhandledrejection', (e) => {
-            console.error('Unhandled promise rejection:', e.reason);
+
+        window.addEventListener('unhandledrejection', (event) => {
+            console.error('Unhandled promise rejection:', event.reason);
             document.getElementById('blazor-error-ui').style.display = 'block';
         });
 
         (function bootOnce() {
-            if (window.__blazorBooted) return; // hard guard
+            if (window.__blazorBooted) return;
             window.__blazorBooted = true;
 
-            function depsReady() {
+            function dependenciesReady() {
                 return !!(window.firebaseApp && window.firebaseAuth && window.firebaseFirestore);
             }
 
             (function waitForFirebase() {
-                if (!depsReady()) { setTimeout(waitForFirebase, 40); return; }
+                if (!dependenciesReady()) {
+                    setTimeout(waitForFirebase, 40);
+                    return;
+                }
 
                 (async () => {
                     try {
                         if (window.NProgress) NProgress.inc(0.15);
-                        console.log('Starting Blazor…');
                         await Blazor.start();
-                        console.log('Blazor started.');
-                    } catch (err) {
-                        console.error('Blazor.start() failed:', err);
+                    } catch (error) {
+                        console.error('Blazor.start() failed:', error);
                         document.getElementById('blazor-error-ui').style.display = 'block';
                     } finally {
                         const loader = document.getElementById("loader");
                         loader?.setAttribute("aria-busy", "false");
                         if (window.NProgress) NProgress.done();
-                        // Remove ONLY the loader overlay (keep #app)
                         setTimeout(() => loader?.remove(), 150);
                     }
                 })();
