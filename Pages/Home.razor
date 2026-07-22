@@ -1,105 +1,80 @@
 ﻿@page "/"
 @layout MainLayout
-@inject NavigationManager Nav
-@inject IJSRuntime JS
-@using Microsoft.AspNetCore.WebUtilities
 
-<PageTitle>Portfolio</PageTitle>
+<PageTitle>Sebastian Alvarez | Portfolio</PageTitle>
 
-@if (!ShowContent)
-{
-    <p>Checking login status...</p>
-}
-else
-{
-    <div class="page-container">
-        <div class="responsive-panel">
+<div class="page-container">
+    <div class="responsive-panel">
 
-            <h2>Welcome, @Username!</h2>
-            <h3>Sebastian Alvarez</h3>
+        <section class="hero-section"
+                 aria-labelledby="portfolio-title">
 
+            <p class="hero-eyebrow">
+                C# / .NET Developer
+            </p>
 
-            <div class="content-section">
-                <h3>Developer Summary</h3>
-                <p>
-                    Software developer with expertise in C#, Blazor, and Python, creating performant 
-                    web applications and automation tools with clean, maintainable code.
-                </p>
+            <h1 id="portfolio-title"
+                class="hero-title">
+                Sebastian Alvarez
+            </h1>
+
+            <p class="hero-subtitle">
+                I build practical web applications, APIs,
+                desktop tools, and mathematical visualization software.
+            </p>
+        </section>
+
+        <section class="content-section">
+            <h2>Developer Summary</h2>
+
+            <p>
+                Software developer with experience in C#, Blazor,
+                Python, REST APIs, and automation, focused on creating
+                reliable applications with clean, maintainable code.
+            </p>
+        </section>
+
+        <section class="skills">
+            <h2>Skills &amp; Expertise</h2>
+
+            <ul class="skills">
+                <li>C# &amp; .NET</li>
+                <li>Python</li>
+                <li>HTML &amp; CSS</li>
+                <li>Azure</li>
+                <li>SQL</li>
+                <li>Docker, Git &amp; GitHub Actions</li>
+                <li>REST APIs &amp; Web Security</li>
+            </ul>
+        </section>
+
+        <section class="content-section stats-flex">
+            <div class="stats-card">
+                <h2>GitHub Contributions</h2>
+
+                <a href="https://github.com/Mirrihk"
+                   target="_blank"
+                   rel="noopener noreferrer">
+
+                    <img src="https://ghchart.rshah.org/Mirrihk"
+                         alt="Sebastian Alvarez's GitHub contribution chart"
+                         loading="lazy" />
+                </a>
             </div>
-            
-            <div class="skills">
-                <h3>Skills & Expertise</h3>
-                <ul class="skills">
-                    <li>C# & .NET</li>
-                    <li>Python</li>
-                    <li>HTML, CSS</li>
-                    <li>Azure</li>
-                    <li>SQL</li>
-                    <li>Docker, Git, CI/CD (GitHub Actions)</li>
-                    <li>RESTful APIs & Web Security</li>
-                </ul>
+
+            <div class="stats-card">
+                <h2>LeetCode Stats</h2>
+
+                <a href="https://leetcode.com/u/sebas6721"
+                   target="_blank"
+                   rel="noopener noreferrer">
+
+                    <img src="https://leetcode-stats.vercel.app/api?username=sebas6721&amp;theme=Dark"
+                         alt="Sebastian Alvarez's LeetCode statistics"
+                         loading="lazy" />
+                </a>
             </div>
+        </section>
 
-            <div class="content-section stats-flex">
-                <div class="stats-card">
-                    <h3>GitHub Contributions</h3>
-                    <a href="https://github.com/Mirrihk" target="_blank" rel="noopener noreferrer">
-                        <img src="https://ghchart.rshah.org/Mirrihk"
-                             alt="GitHub contributions chart" />
-                    </a>
-                </div>
-
-                <div class="stats-card">
-                    <h3>LeetCode Stats</h3>
-                    <a href="https://leetcode.com/u/sebas6721" target="_blank" rel="noopener noreferrer">
-                        <img src="https://leetcode-stats.vercel.app/api?username=sebas6721&theme=Dark"
-                             alt="LeetCode stats card" />
-                    </a>
-                </div>
-            </div>
-
-
-
-            <button class="logout-btn" @onclick="HandleLogout">Logout</button>
-
-        </div>
     </div>
-}
-
-@code {
-    private string Username { get; set; } = "Guest";
-    bool ShowContent = false;
-
-    private async Task HandleLogout()
-    {
-        await JS.InvokeVoidAsync("localStorage.removeItem", "isLoggedIn");
-        await JS.InvokeVoidAsync("localStorage.removeItem", "username");
-        Nav.NavigateTo("/password", forceLoad: true);
-    }
-
-    protected override async Task OnInitializedAsync()
-    {
-        var uri = Nav.ToAbsoluteUri(Nav.Uri);
-        var query = QueryHelpers.ParseQuery(uri.Query);
-
-        if (query.TryGetValue("guest", out var guestFlag) && guestFlag == "true")
-        {
-            ShowContent = true;
-            return;
-        }
-
-        var isLoggedIn = await JS.InvokeAsync<string>("localStorage.getItem", "isLoggedIn");
-        if (isLoggedIn == "true")
-        {
-            var storedUsername = await JS.InvokeAsync<string>("localStorage.getItem", "username");
-            if (!string.IsNullOrWhiteSpace(storedUsername))
-                Username = storedUsername;
-
-            ShowContent = true;
-        }
-        else
-        {
-            Nav.NavigateTo("/password");
-        }
-    }
-}
+</div>

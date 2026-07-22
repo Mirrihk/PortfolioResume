@@ -1,10 +1,125 @@
 ﻿@using ResumePortfolio
 @using ResumePortfolio.Pages
-
-
 @using Microsoft.AspNetCore.Components
 @using Microsoft.AspNetCore.Components.Web
 
+@inject NavigationManager Nav
+@inject IJSRuntime JS
+
 @inherits LayoutComponentBase
 
-@Body
+<header class="site-header">
+    <a class="site-brand" href="/">
+        Sebastian Alvarez
+    </a>
+
+    <nav class="site-nav"
+         aria-label="Primary navigation">
+
+        <a href="/">Portfolio</a>
+
+        <a href="https://github.com/Mirrihk"
+           target="_blank"
+           rel="noopener noreferrer">
+            GitHub
+        </a>
+
+        @if (IsSignedIn)
+        {
+            <span class="signed-in-user"
+                  title="Signed-in account">
+                @DisplayName
+            </span>
+
+            <button type="button"
+                    class="nav-auth-button"
+                    @onclick="SignOutAsync">
+                Sign out
+            </button>
+        }
+        else
+        {
+            <button type="button"
+                    class="nav-auth-button"
+                    @onclick="GoToSignIn">
+                Sign in
+            </button>
+        }
+    </nav>
+</header>
+
+<main>
+    @Body
+</main>
+
+@code {
+    private bool IsSignedIn { get; set; }
+
+    private string DisplayName { get; set; } = "Account";
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+        {
+            return;
+        }
+
+        try
+        {
+            AuthStateResult state =
+                await JS.InvokeAsync<AuthStateResult>(
+                    "authProvider.getAuthState");
+
+            IsSignedIn = state.IsSignedIn;
+
+            if (!string.IsNullOrWhiteSpace(state.DisplayName))
+            {
+                DisplayName = state.DisplayName;
+            }
+
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(
+                $"Could not read Firebase authentication state: {ex.Message}");
+        }
+    }
+
+    private void GoToSignIn()
+    {
+        Nav.NavigateTo("/password");
+    }
+
+    private async Task SignOutAsync()
+    {
+        try
+        {
+            bool signedOut =
+                await JS.InvokeAsync<bool>(
+                    "authProvider.logout");
+
+            if (!signedOut)
+            {
+                return;
+            }
+
+            IsSignedIn = false;
+            DisplayName = "Account";
+
+            Nav.NavigateTo("/", forceLoad: true);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(
+                $"Firebase sign-out failed: {ex.Message}");
+        }
+    }
+
+    private sealed class AuthStateResult
+    {
+        public bool IsSignedIn { get; set; }
+
+        public string? DisplayName { get; set; }
+    }
+}
