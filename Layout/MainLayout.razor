@@ -2,28 +2,54 @@
 @using ResumePortfolio.Pages
 @using Microsoft.AspNetCore.Components
 @using Microsoft.AspNetCore.Components.Web
+
 @inject NavigationManager Nav
 @inject IJSRuntime JS
 
 @inherits LayoutComponentBase
 
 <header class="site-header">
-    <a class="site-brand" href="/">Sebastian Alvarez</a>
+    <div class="site-header-inner">
+        <a class="site-brand" href="/">
+            <span class="brand-mark">SA</span>
 
-    <nav class="site-nav" aria-label="Primary navigation">
-        <a href="/">Portfolio</a>
-        <a href="https://github.com/Mirrihk" target="_blank" rel="noopener noreferrer">GitHub</a>
+            <span class="brand-text">
+                <strong>Sebastian Alvarez</strong>
+                <small>C# / .NET Developer</small>
+            </span>
+        </a>
 
-        @if (IsSignedIn)
-        {
-            <span class="signed-in-user" title="Signed-in account">@DisplayName</span>
-            <button class="nav-auth-button" @onclick="SignOutAsync">Sign out</button>
-        }
-        else
-        {
-            <button class="nav-auth-button" @onclick="GoToSignIn">Sign in</button>
-        }
-    </nav>
+        <nav class="site-nav" aria-label="Primary navigation">
+            <a href="/">Portfolio</a>
+
+            <a href="https://github.com/Mirrihk"
+               target="_blank"
+               rel="noopener noreferrer">
+                GitHub
+            </a>
+
+            @if (IsSignedIn)
+            {
+                <span class="signed-in-user" title="Signed-in account">
+                    @DisplayName
+                </span>
+
+                <button type="button"
+                        class="nav-auth-button"
+                        @onclick="SignOutAsync">
+                    Sign out
+                </button>
+            }
+            else
+            {
+                <button type="button"
+                        class="nav-auth-button"
+                        @onclick="GoToSignIn">
+                    Sign in
+                </button>
+            }
+        </nav>
+    </div>
 </header>
 
 <main>
@@ -31,30 +57,71 @@
 </main>
 
 @code {
-    private bool IsSignedIn;
-    private string DisplayName = "Account";
+    private bool IsSignedIn { get; set; }
+    private string DisplayName { get; set; } = "Account";
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (!firstRender)
+        {
             return;
+        }
 
-        IsSignedIn = await JS.InvokeAsync<bool>("authProvider.isSignedIn");
-        var displayName = await JS.InvokeAsync<string?>("authProvider.getCurrentUserDisplayName");
+        try
+        {
+            AuthStateResult state =
+                await JS.InvokeAsync<AuthStateResult>(
+                    "authProvider.getAuthState");
 
-        if (!string.IsNullOrWhiteSpace(displayName))
-            DisplayName = displayName;
+            IsSignedIn = state.IsSignedIn;
 
-        StateHasChanged();
+            if (!string.IsNullOrWhiteSpace(state.DisplayName))
+            {
+                DisplayName = state.DisplayName;
+            }
+
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(
+                $"Could not read Firebase authentication state: {ex.Message}");
+        }
     }
 
-    private void GoToSignIn() => Nav.NavigateTo("/password");
+    private void GoToSignIn()
+    {
+        Nav.NavigateTo("/password");
+    }
 
     private async Task SignOutAsync()
     {
-        await JS.InvokeAsync<bool>("authProvider.logout");
-        IsSignedIn = false;
-        DisplayName = "Account";
-        Nav.NavigateTo("/");
+        try
+        {
+            bool signedOut =
+                await JS.InvokeAsync<bool>(
+                    "authProvider.logout");
+
+            if (!signedOut)
+            {
+                return;
+            }
+
+            IsSignedIn = false;
+            DisplayName = "Account";
+
+            Nav.NavigateTo("/", forceLoad: true);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(
+                $"Firebase sign-out failed: {ex.Message}");
+        }
+    }
+
+    private sealed class AuthStateResult
+    {
+        public bool IsSignedIn { get; set; }
+        public string? DisplayName { get; set; }
     }
 }
