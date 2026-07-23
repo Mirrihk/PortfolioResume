@@ -1,78 +1,198 @@
 ﻿@page "/"
 @layout MainLayout
 
-<PageTitle>Sebastian Alvarez | Portfolio</PageTitle>
+<PageTitle>Sebastian Alvarez | C# and .NET Developer</PageTitle>
 
-<div class="page-container">
-    <div class="responsive-panel">
+<div class="portfolio-home">
+    <div class="portfolio-shell">
 
-        <section class="hero-section"
+        <section class="intro-card"
                  aria-labelledby="portfolio-title">
 
-            <p class="hero-eyebrow">
-                C# / .NET Developer
-            </p>
+            <div class="intro-copy">
+                <span class="status-pill">
+                    Open to development opportunities
+                </span>
 
-            <h1 id="portfolio-title"
-                class="hero-title">
-                Sebastian Alvarez
-            </h1>
+                <p class="intro-eyebrow">
+                    C# / .NET Software Developer
+                </p>
 
-            <p class="hero-subtitle">
-                I build practical web applications, APIs,
-                desktop tools, and mathematical visualization software.
-            </p>
-        </section>
+                <h1 id="portfolio-title">
+                    Sebastian Alvarez
+                </h1>
 
-        <section class="content-section">
-            <h2>Developer Summary</h2>
+                <p class="intro-summary">
+                    I build practical web applications, REST APIs,
+                    Windows tools, and mathematical visualization software.
+                    My work combines clean C# architecture with hands-on
+                    troubleshooting and user-focused design.
+                </p>
 
-            <p>
-                Software developer with experience in C#, Blazor,
-                Python, REST APIs, and automation, focused on creating
-                reliable applications with clean, maintainable code.
-            </p>
-        </section>
+                <div class="intro-actions">
+                    <a class="action-button action-primary"
+                       href="#featured-work">
+                        View featured work
+                    </a>
 
-        <section class="skills">
-            <h2>Skills &amp; Expertise</h2>
+                    <a class="action-button action-secondary"
+                       href="https://github.com/Mirrihk"
+                       target="_blank"
+                       rel="noopener noreferrer">
+                        GitHub profile
+                    </a>
+                </div>
 
-            <ul class="skills">
-                <li>C# &amp; .NET</li>
-                <li>Python</li>
-                <li>HTML &amp; CSS</li>
-                <li>Azure</li>
-                <li>SQL</li>
-                <li>Docker, Git &amp; GitHub Actions</li>
-                <li>REST APIs &amp; Web Security</li>
-            </ul>
-        </section>
-
-        <section class="content-section stats-flex">
-            <div class="stats-card">
-                <h2>GitHub Contributions</h2>
-
-                <a href="https://github.com/Mirrihk"
-                   target="_blank"
-                   rel="noopener noreferrer">
-
-                    <img src="https://ghchart.rshah.org/Mirrihk"
-                         alt="Sebastian Alvarez's GitHub contribution chart"
-                         loading="lazy" />
-                </a>
+                <ul class="technology-list"
+                    aria-label="Primary technologies">
+                    <li>C#</li>
+                    <li>.NET</li>
+                    <li>Blazor</li>
+                    <li>REST APIs</li>
+                    <li>OpenTK</li>
+                </ul>
             </div>
 
-            <div class="stats-card">
-                <h2>LeetCode Stats</h2>
+            <figure class="profile-figure">
+                <div class="profile-image-frame">
+                    <img src="https://avatars.githubusercontent.com/u/89320868?v=4"
+                         alt="Sebastian Alvarez"
+                         class="profile-image" />
+                </div>
 
-                <a href="https://leetcode.com/u/sebas6721"
+                <figcaption>
+                    <strong>South Florida</strong>
+                    <span>Bilingual English / Spanish</span>
+                </figcaption>
+            </figure>
+
+        </section>
+
+        <section id="featured-work"
+                 class="feature-grid"
+                 aria-label="Featured work and GitHub activity">
+
+            <article class="feature-card fluxion-card">
+                <div class="feature-card-heading">
+                    <div>
+                        <p class="card-label">Featured project</p>
+                        <h2>Fluxion</h2>
+                    </div>
+
+                    <span class="project-status">
+                        Active
+                    </span>
+                </div>
+
+                <svg class="fluxion-visual"
+                     viewBox="0 0 560 220"
+                     role="img"
+                     aria-label="Stylized mathematical graph representing Fluxion">
+                    <defs>
+                        <linearGradient id="fluxion-line"
+                                        x1="0"
+                                        y1="0"
+                                        x2="1"
+                                        y2="0">
+                            <stop offset="0%" stop-color="#67e8f9" />
+                            <stop offset="100%" stop-color="#818cf8" />
+                        </linearGradient>
+                    </defs>
+
+                    <g class="graph-grid">
+                        <path d="M40 30V190M120 30V190M200 30V190M280 30V190M360 30V190M440 30V190M520 30V190" />
+                        <path d="M40 30H520M40 70H520M40 110H520M40 150H520M40 190H520" />
+                    </g>
+
+                    <path class="graph-axis"
+                          d="M40 110H520M280 30V190" />
+
+                    <path class="graph-line"
+                          d="M40 145 C85 70, 125 70, 165 120 S245 175, 285 105 S365 40, 405 95 S475 165, 520 75" />
+
+                    <circle class="graph-point" cx="165" cy="120" r="5" />
+                    <circle class="graph-point" cx="285" cy="105" r="5" />
+                    <circle class="graph-point" cx="405" cy="95" r="5" />
+                </svg>
+
+                <p class="feature-description">
+                    A C# mathematics and graphics engine featuring expression
+                    parsing, algebra tools, 2D graphing, and interactive 3D
+                    surface rendering with OpenGL.
+                </p>
+
+                <ul class="card-tags"
+                    aria-label="Fluxion technologies">
+                    <li>C#</li>
+                    <li>OpenTK</li>
+                    <li>OpenGL</li>
+                    <li>Math rendering</li>
+                </ul>
+
+                <a class="card-link"
+                   href="https://github.com/Mirrihk/Fluxion"
                    target="_blank"
                    rel="noopener noreferrer">
+                    Explore Fluxion
+                    <span aria-hidden="true">→</span>
+                </a>
+            </article>
 
-                    <img src="https://leetcode-stats.vercel.app/api?username=sebas6721&amp;theme=Dark"
-                         alt="Sebastian Alvarez's LeetCode statistics"
+            <article class="feature-card github-card">
+                <div class="feature-card-heading">
+                    <div>
+                        <p class="card-label">Development activity</p>
+                        <h2>GitHub</h2>
+                    </div>
+
+                    <span class="github-mark"
+                          aria-hidden="true">
+                        GH
+                    </span>
+                </div>
+
+                <a class="github-stats-link"
+                   href="https://github.com/Mirrihk"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   aria-label="View Sebastian Alvarez on GitHub">
+                    <img class="github-stats-image"
+                         src="https://github-readme-stats.vercel.app/api?username=Mirrihk&amp;show_icons=true&amp;hide_border=true&amp;theme=transparent&amp;title_color=e8f5ff&amp;text_color=b8c3d1&amp;icon_color=67e8f9&amp;bg_color=00000000"
+                         alt="GitHub statistics for Mirrihk"
                          loading="lazy" />
                 </a>
+
+                <p class="feature-description">
+                    Source code for my .NET applications, visualization
+                    experiments, finance tools, and ongoing technical projects.
+                </p>
+
+                <a class="card-link"
+                   href="https://github.com/Mirrihk?tab=repositories"
+                   target="_blank"
+                   rel="noopener noreferrer">
+                    Browse repositories
+                    <span aria-hidden="true">→</span>
+                </a>
+            </article>
+
+        </section>
+
+        <section class="experience-strip"
+                 aria-label="Professional strengths">
+            <div>
+                <strong>10+ years</strong>
+                <span>Customer-focused problem solving</span>
+            </div>
+
+            <div>
+                <strong>C# focused</strong>
+                <span>Web, API, desktop, and graphics projects</span>
+            </div>
+
+            <div>
+                <strong>Bilingual</strong>
+                <span>Professional English and Spanish communication</span>
             </div>
         </section>
 
