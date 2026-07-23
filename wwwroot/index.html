@@ -116,13 +116,25 @@
                 }
             },
 
-            isSignedIn() {
-                return firebase.auth().currentUser !== null;
-            },
+            getAuthState() {
+                return new Promise((resolve) => {
+                    const unsubscribe = firebase.auth().onAuthStateChanged(
+                        (user) => {
+                            resolve({
+                                isSignedIn: user !== null,
+                                displayName: user
+                                    ? (user.displayName || user.email || "Account")
+                                    : null
+                            });
 
-            getCurrentUserDisplayName() {
-                const user = firebase.auth().currentUser;
-                return user ? (user.displayName || user.email || "Account") : null;
+                            unsubscribe();
+                        },
+                        (error) => {
+                            console.error(error);
+                            resolve({ isSignedIn: false, displayName: null });
+                            unsubscribe();
+                        });
+                });
             }
         };
     </script>
