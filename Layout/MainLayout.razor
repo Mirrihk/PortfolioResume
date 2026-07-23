@@ -9,43 +9,52 @@
 @inherits LayoutComponentBase
 
 <header class="site-header">
-    <a class="site-brand" href="/">
-        Sebastian Alvarez
-    </a>
+    <div class="site-header-inner">
 
-    <nav class="site-nav"
-         aria-label="Primary navigation">
+        <a class="site-brand" href="/">
+            <span class="brand-mark">SA</span>
 
-        <a href="/">Portfolio</a>
-
-        <a href="https://github.com/Mirrihk"
-           target="_blank"
-           rel="noopener noreferrer">
-            GitHub
+            <span class="brand-text">
+                <strong>Sebastian Alvarez</strong>
+                <small>C# / .NET Developer</small>
+            </span>
         </a>
 
-        @if (IsSignedIn)
-        {
-            <span class="signed-in-user"
-                  title="Signed-in account">
-                @DisplayName
-            </span>
+        <nav class="site-nav"
+             aria-label="Primary navigation">
 
-            <button type="button"
-                    class="nav-auth-button"
-                    @onclick="SignOutAsync">
-                Sign out
-            </button>
-        }
-        else
-        {
-            <button type="button"
-                    class="nav-auth-button"
-                    @onclick="GoToSignIn">
-                Sign in
-            </button>
-        }
-    </nav>
+            <a href="/">Portfolio</a>
+
+            <a href="https://github.com/Mirrihk"
+               target="_blank"
+               rel="noopener noreferrer">
+                GitHub
+            </a>
+
+            @if (IsSignedIn)
+            {
+                <span class="signed-in-user"
+                      title="Signed-in account">
+                    @DisplayName
+                </span>
+
+                <button type="button"
+                        class="nav-auth-button"
+                        @onclick="SignOutAsync">
+                    Sign out
+                </button>
+            }
+            else
+            {
+                <button type="button"
+                        class="nav-auth-button"
+                        @onclick="GoToSignIn">
+                    Sign in
+                </button>
+            }
+
+        </nav>
+    </div>
 </header>
 
 <main>

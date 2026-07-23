@@ -1,4 +1,175 @@
 ﻿/* ==== Portfolio Home ==== */
+/* ==== Portfolio Header ==== */
+
+.site-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    width: 100%;
+    background: rgba(5, 7, 10, 0.92);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(18px);
+}
+
+.site-header-inner {
+    width: min(1120px, calc(100% - 2rem));
+    min-height: 72px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+}
+
+.site-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: #f8fafc;
+    text-decoration: none;
+}
+
+.brand-mark {
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    border: 1px solid rgba(103, 232, 249, 0.25);
+    border-radius: 10px;
+    background: rgba(103, 232, 249, 0.08);
+    color: #a5f3fc;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+}
+
+.brand-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+}
+
+    .brand-text strong {
+        font-size: 0.88rem;
+        font-weight: 700;
+    }
+
+    .brand-text small {
+        margin-top: 0.15rem;
+        color: #7f8b9b;
+        font-size: 0.68rem;
+    }
+
+.site-nav {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+}
+
+    .site-nav a {
+        color: #aeb8c7;
+        font-size: 0.78rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: color 0.2s ease, transform 0.2s ease;
+    }
+
+        .site-nav a:hover {
+            color: #f8fafc;
+            transform: translateY(-1px);
+        }
+
+.signed-in-user {
+    max-width: 150px;
+    overflow: hidden;
+    color: #7f8b9b;
+    font-size: 0.72rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.nav-auth-button {
+    margin: 0;
+    padding: 0.55rem 0.85rem;
+    width: auto;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.04);
+    color: #e5e7eb;
+    font-family: inherit;
+    font-size: 0.72rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+    .nav-auth-button:hover {
+        background: rgba(103, 232, 249, 0.08);
+        border-color: rgba(103, 232, 249, 0.35);
+        color: #a5f3fc;
+    }
+
+main {
+    width: 100%;
+}
+
+@media (max-width: 700px) {
+    .site-header-inner {
+        min-height: auto;
+        padding: 0.8rem 0;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .site-nav {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 0.9rem;
+    }
+}
+
+@media (max-width: 430px) {
+    .brand-text small {
+        display: none;
+    }
+
+    .signed-in-user {
+        width: 100%;
+        max-width: none;
+        text-align: center;
+    }
+}
+
+.github-stats-link {
+    min-height: 190px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.015);
+    overflow: hidden;
+}
+
+.github-stats-image {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+.github-contribution-image {
+    filter: brightness(0.95) contrast(1.05);
+}
+
+.github-stats-link:hover {
+    border-color: rgba(103, 232, 249, 0.22);
+}
+
 .portfolio-home {
     min-height: calc(100vh - 76px);
     padding: 4rem 1.5rem;
