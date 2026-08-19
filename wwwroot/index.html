@@ -59,6 +59,7 @@
     <script src="_framework/blazor.webassembly.js" autostart="false"></script>
 
     <!-- Firebase init -->
+    <!-- Firebase init -->
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyD5zDDoras1a77f1c3-GZDE4FaCk5uAl6s",
@@ -67,44 +68,243 @@
             appId: "sebastian-ccf8e"
         };
 
-        const app = firebase.initializeApp(firebaseConfig);
+        const app = firebase.apps.length
+            ? firebase.app()
+            : firebase.initializeApp(firebaseConfig);
+
+        const auth = firebase.auth();
+
         window.firebaseApp = app;
-        window.firebaseAuth = firebase.auth();
+        window.firebaseAuth = auth;
         window.firebaseFirestore = firebase.firestore();
 
+        const persistenceReady = auth
+            .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+            .catch(error => {
+                console.error(
+                    "Firebase persistence could not be enabled:",
+                    error);
+            });
+
+        let initialAuthStateResolved = false;
+
+        const authReady = new Promise(resolve => {
+            auth.onAuthStateChanged(
+                user => {
+                    syncStoredAuthState(user);
+
+                    if (!initialAuthStateResolved) {
+                        initialAuthStateResolved = true;
+                        resolve(user);
+                    }
+                },
+                error => {
+                    console.error(
+                        "Firebase auth-state error:",
+                        error);
+
+                    if (!initialAuthStateResolved) {
+                        initialAuthStateResolved = true;
+                        resolve(null);
+                    }
+                });
+        });
+
+        function getUserDisplayName(user) {
+            return user?.displayName ||
+                user?.email ||
+                user?.uid ||
+                "Account";
+        }
+
+        function syncStoredAuthState(user) {
+            if (user) {
+                localStorage.setItem(
+                    "isLoggedIn",
+                    "true");
+
+                localStorage.setItem(
+                    "username",
+                    getUserDisplayName(user));
+
+                return;
+            }
+
+            localStorage.removeItem("isLoggedIn");
+            localStorage.removeItem("username");
+        }
+
+        function createSuccessResult(user) {
+            return {
+                success: true,
+                message: null,
+                isSignedIn: true,
+                displayName: getUserDisplayName(user),
+                email: user?.email || null
+            };
+        }
+
+        function createFailureResult(error) {
+            console.error(
+                "Firebase authentication failed:",
+                error);
+
+            return {
+                success: false,
+                message: getFriendlyAuthMessage(error),
+                isSignedIn: false,
+                displayName: null,
+                email: null
+            };
+        }
+
+        function getFriendlyAuthMessage(error) {
+            switch (error?.code) {
+                case "auth/invalid-email":
+                    return "Enter a valid email address.";
+
+                case "auth/invalid-credential":
+                case "auth/user-not-found":
+                case "auth/wrong-password":
+                    return "The email or password is incorrect.";
+
+                case "auth/email-already-in-use":
+                    return "An account already exists for this email.";
+
+                case "auth/weak-password":
+                    return "Use a password with at least six characters.";
+
+                case "auth/popup-blocked":
+                    return "Your browser blocked the sign-in popup.";
+
+                case "auth/popup-closed-by-user":
+                    return "The sign-in popup was closed before completion.";
+
+                case "auth/account-exists-with-different-credential":
+                    return "This email already uses a different sign-in provider.";
+
+                case "auth/operation-not-allowed":
+                    return "This sign-in method is not enabled yet.";
+
+                case "auth/too-many-requests":
+                    return "Too many attempts. Please wait and try again.";
+
+                default:
+                    return error?.message ||
+                        "Sign-in failed. Please try again.";
+            }
+        }
+
         window.authProvider = {
+            async loginWithEmail(email, password) {
+                try {
+                    await persistenceReady;
+
+                    const credential =
+                        await auth.signInWithEmailAndPassword(
+                            email,
+                            password);
+
+                    return createSuccessResult(
+                        credential.user);
+                }
+                catch (error) {
+                    return createFailureResult(error);
+                }
+            },
+
             async loginWithGoogle() {
-                try { await firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider()); return true; }
-                catch (e) { console.error(e); return false; }
+                try {
+                    await persistenceReady;
+
+                    const provider =
+                        new firebase.auth.GoogleAuthProvider();
+
+                    const credential =
+                        await auth.signInWithPopup(provider);
+
+                    return createSuccessResult(
+                        credential.user);
+                }
+                catch (error) {
+                    return createFailureResult(error);
+                }
             },
+
             async loginWithGitHub() {
-                try { await firebase.auth().signInWithPopup(new firebase.auth.GithubAuthProvider()); return true; }
-                catch (e) { console.error(e); return false; }
+                try {
+                    await persistenceReady;
+
+                    const provider =
+                        new firebase.auth.GithubAuthProvider();
+
+                    const credential =
+                        await auth.signInWithPopup(provider);
+
+                    return createSuccessResult(
+                        credential.user);
+                }
+                catch (error) {
+                    return createFailureResult(error);
+                }
             },
-            async loginAnonymously() {
-                try { await firebase.auth().signInAnonymously(); return true; }
-                catch (e) { console.error(e); return false; }
+
+            async createAccount(
+                email,
+                password,
+                displayName) {
+
+                try {
+                    await persistenceReady;
+
+                    const credential =
+                        await auth.createUserWithEmailAndPassword(
+                            email,
+                            password);
+
+                    if (displayName?.trim()) {
+                        await credential.user.updateProfile({
+                            displayName: displayName.trim()
+                        });
+                    }
+
+                    return createSuccessResult(
+                        credential.user);
+                }
+                catch (error) {
+                    return createFailureResult(error);
+                }
             },
+
+            async getAuthState() {
+                await authReady;
+
+                const user = auth.currentUser;
+
+                return {
+                    isSignedIn: Boolean(user),
+                    displayName:
+                        user
+                            ? getUserDisplayName(user)
+                            : null,
+                    email: user?.email || null
+                };
+            },
+
             async logout() {
-                try { await firebase.auth().signOut(); return true; }
-                catch (e) { console.error(e); return false; }
-            },
-            subscribeAuthState() { return true; },
-            getCurrentUserDisplayName() {
-                const u = firebase.auth().currentUser;
-                return u ? (u.displayName || u.email || u.uid) : null;
+                try {
+                    await auth.signOut();
+                    return true;
+                }
+                catch (error) {
+                    console.error(
+                        "Firebase sign-out failed:",
+                        error);
+
+                    return false;
+                }
             }
         };
-
-        firebase.auth().onAuthStateChanged((user) => {
-            if (user) {
-                localStorage.setItem("isLoggedIn", "true");
-                localStorage.setItem("username", user.displayName || user.email || user.uid);
-            } else {
-                localStorage.removeItem("isLoggedIn");
-                localStorage.removeItem("username");
-            }
-        });
     </script>
 
     <!-- NProgress JS + single guarded boot -->

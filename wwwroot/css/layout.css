@@ -101,9 +101,43 @@
         }
 
 .signed-in-user {
-    max-width: 150px;
+    max-width: 210px;
+    padding: 0.4rem 0.65rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
     overflow: hidden;
+    border: 1px solid rgba(103, 232, 249, 0.22);
+    border-radius: 999px;
+    background: rgba(103, 232, 249, 0.07);
+}
+
+.account-status-dot {
+    width: 8px;
+    height: 8px;
+    flex: 0 0 auto;
+    border-radius: 50%;
+    background: #4ade80;
+    box-shadow: 0 0 9px rgba(74, 222, 128, 0.65);
+}
+
+.account-badge-copy {
+    min-width: 0;
+    display: grid;
+    line-height: 1.15;
+}
+
+.account-badge-label {
     color: #7f8b9b;
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+}
+
+.account-badge-name {
+    overflow: hidden;
+    color: #dff8ff;
     font-size: 0.72rem;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -158,7 +192,8 @@ main {
     .signed-in-user {
         width: 100%;
         max-width: none;
-        text-align: center;
+        box-sizing: border-box;
+        justify-content: center;
     }
 }
 
@@ -193,10 +228,7 @@ main {
 .portfolio-home {
     min-height: calc(100vh - 76px);
     padding: 4rem 1.5rem;
-    background:
-        radial-gradient(circle at top right, rgba(103, 232, 249, 0.08), transparent 34%),
-        linear-gradient(rgba(5, 7, 10, 0.8), rgba(5, 7, 10, 0.92)),
-        url('/images/bg.avif') center / cover fixed;
+    background: radial-gradient(circle at top right, rgba(103, 232, 249, 0.08), transparent 34%), linear-gradient(rgba(5, 7, 10, 0.8), rgba(5, 7, 10, 0.92)), url('/images/bg.avif') center / cover fixed;
     color: #eef2f7;
 }
 
@@ -294,9 +326,9 @@ main {
     transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
 }
 
-.action-button:hover {
-    transform: translateY(-2px);
-}
+    .action-button:hover {
+        transform: translateY(-2px);
+    }
 
 .action-primary {
     background: #e8f5ff;
@@ -309,9 +341,9 @@ main {
     color: #e8edf5;
 }
 
-.action-secondary:hover {
-    border-color: rgba(103, 232, 249, 0.45);
-}
+    .action-secondary:hover {
+        border-color: rgba(103, 232, 249, 0.45);
+    }
 
 .technology-list,
 .card-tags {
@@ -326,15 +358,15 @@ main {
     margin: 1.7rem 0 0;
 }
 
-.technology-list li,
-.card-tags li {
-    padding: 0.38rem 0.62rem;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 7px;
-    background: rgba(255, 255, 255, 0.035);
-    color: #aeb9c7;
-    font-size: 0.78rem;
-}
+    .technology-list li,
+    .card-tags li {
+        padding: 0.38rem 0.62rem;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 7px;
+        background: rgba(255, 255, 255, 0.035);
+        color: #aeb9c7;
+        font-size: 0.78rem;
+    }
 
 .profile-figure {
     margin: 0;
@@ -367,14 +399,14 @@ main {
     gap: 0.2rem;
 }
 
-.profile-figure figcaption strong {
-    font-size: 0.92rem;
-}
+    .profile-figure figcaption strong {
+        font-size: 0.92rem;
+    }
 
-.profile-figure figcaption span {
-    color: #8f9aaa;
-    font-size: 0.8rem;
-}
+    .profile-figure figcaption span {
+        color: #8f9aaa;
+        font-size: 0.8rem;
+    }
 
 .feature-grid {
     display: grid;
@@ -397,9 +429,9 @@ main {
     gap: 1rem;
 }
 
-.feature-card-heading .card-label {
-    margin-top: 0;
-}
+    .feature-card-heading .card-label {
+        margin-top: 0;
+    }
 
 .feature-card h2 {
     margin: 0;
@@ -469,14 +501,14 @@ main {
     text-decoration: none;
 }
 
-.card-link span {
-    font-size: 1.2rem;
-    transition: transform 0.2s ease;
-}
+    .card-link span {
+        font-size: 1.2rem;
+        transition: transform 0.2s ease;
+    }
 
-.card-link:hover span {
-    transform: translateX(4px);
-}
+    .card-link:hover span {
+        transform: translateX(4px);
+    }
 
 .github-mark {
     width: 40px;
@@ -514,26 +546,26 @@ main {
     border-radius: 18px;
 }
 
-.experience-strip > div {
-    padding: 0.3rem 1rem;
-    display: grid;
-    gap: 0.25rem;
-    border-right: 1px solid rgba(255, 255, 255, 0.08);
-}
+    .experience-strip > div {
+        padding: 0.3rem 1rem;
+        display: grid;
+        gap: 0.25rem;
+        border-right: 1px solid rgba(255, 255, 255, 0.08);
+    }
 
-.experience-strip > div:last-child {
-    border-right: 0;
-}
+        .experience-strip > div:last-child {
+            border-right: 0;
+        }
 
-.experience-strip strong {
-    font-size: 1rem;
-}
+    .experience-strip strong {
+        font-size: 1rem;
+    }
 
-.experience-strip span {
-    color: #8f9aaa;
-    font-size: 0.78rem;
-    line-height: 1.45;
-}
+    .experience-strip span {
+        color: #8f9aaa;
+        font-size: 0.78rem;
+        line-height: 1.45;
+    }
 
 /* ==== Existing Form Layout ==== */
 .responsive-panel {
@@ -554,12 +586,12 @@ main {
     backdrop-filter: blur(20px);
 }
 
-.responsive-panel h1,
-.responsive-panel h2,
-.responsive-panel h3 {
-    margin-bottom: 0.5rem;
-    font-size: calc(1.2rem + 0.5vw);
-}
+    .responsive-panel h1,
+    .responsive-panel h2,
+    .responsive-panel h3 {
+        margin-bottom: 0.5rem;
+        font-size: calc(1.2rem + 0.5vw);
+    }
 
 @media (max-width: 850px) {
     .portfolio-home {
@@ -587,15 +619,15 @@ main {
         grid-template-columns: 1fr;
     }
 
-    .experience-strip > div {
-        padding: 0.75rem;
-        border-right: 0;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    }
+        .experience-strip > div {
+            padding: 0.75rem;
+            border-right: 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
 
-    .experience-strip > div:last-child {
-        border-bottom: 0;
-    }
+            .experience-strip > div:last-child {
+                border-bottom: 0;
+            }
 }
 
 @media (max-width: 520px) {
@@ -608,9 +640,9 @@ main {
         border-radius: 16px;
     }
 
-    .intro-card h1 {
-        font-size: 2.65rem;
-    }
+        .intro-card h1 {
+            font-size: 2.65rem;
+        }
 
     .intro-actions {
         flex-direction: column;
