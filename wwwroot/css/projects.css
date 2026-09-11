@@ -1,0 +1,237 @@
+.project-carousel {
+    min-width: 0;
+}
+
+.project-carousel-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin: -0.5rem 0 0.35rem;
+}
+
+.project-carousel-heading .card-label {
+    margin: 0;
+}
+
+.project-carousel button {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0.5rem;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background: transparent;
+    color: #99a8ba;
+    font: inherit;
+    cursor: pointer;
+    transition: color 0.2s, background-color 0.2s;
+}
+
+.project-carousel button:hover {
+    background: rgba(103, 232, 249, 0.07);
+    color: #dff8ff;
+}
+
+.project-carousel .project-rotation {
+    font-size: 0.75rem;
+}
+
+.project-carousel :focus-visible {
+    outline: 2px solid #67e8f9;
+    outline-offset: 2px;
+}
+
+.project-viewport {
+    display: grid;
+    flex: 1;
+    overflow: hidden;
+    perspective: 1000px;
+    /* Keep focus outlines inside the clipped animation viewport. */
+    padding: 4px;
+    margin: -4px;
+}
+
+.project-slide {
+    grid-area: 1 / 1;
+    min-width: 0;
+    display: flex;
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transform-origin: center;
+}
+
+.project-slide[data-active="true"] {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.project-destination {
+    min-width: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    border-radius: 4px;
+    color: inherit;
+    text-decoration: none;
+}
+
+.project-destination .project-status {
+    margin-top: 0.35rem;
+    white-space: nowrap;
+}
+
+.project-destination:hover .card-link {
+    color: #67e8f9;
+}
+
+.project-destination:hover .card-link span {
+    transform: translate(3px, -3px);
+}
+
+.project-preview {
+    box-sizing: border-box;
+    display: block;
+    width: 100%;
+    aspect-ratio: 560 / 220;
+    min-height: 190px;
+    margin: 1.1rem 0 0.5rem;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+}
+
+.alphascope-preview {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 0.55rem;
+    padding: 1rem 1.25rem;
+    background: #171b18;
+    color: #f0eddf;
+}
+
+.alphascope-preview-top,
+.alphascope-preview-search,
+.alphascope-preview-tickers {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.alphascope-preview-top strong {
+    font-size: 0.8rem;
+    letter-spacing: -0.04em;
+}
+
+.alphascope-preview-top strong span {
+    color: #d8b576;
+}
+
+.alphascope-preview-top > span {
+    color: #a9b09f;
+    font-size: 0.5rem;
+    letter-spacing: 0.13em;
+}
+
+.alphascope-preview-title {
+    margin: 0;
+    font-size: clamp(1.25rem, 3vw, 1.7rem);
+    line-height: 1.06;
+    letter-spacing: -0.04em;
+    font-weight: 650;
+}
+
+.alphascope-preview-title span {
+    color: #c6b28b;
+}
+
+.alphascope-preview-search {
+    padding: 0.55rem 0.7rem;
+    border: 1px solid #454b3f;
+    border-radius: 6px;
+    color: #c9cdbe;
+    font-size: 0.65rem;
+}
+
+.alphascope-preview-search > span:last-child {
+    color: #d8b576;
+}
+
+.alphascope-preview-tickers {
+    justify-content: flex-start;
+    color: #c0c9b6;
+    font-size: 0.52rem;
+    letter-spacing: 0.04em;
+}
+
+.alphascope-preview-tickers > span {
+    padding: 0.2rem 0.35rem;
+    border-radius: 3px;
+    background: #2b332c;
+}
+
+.alphascope-preview-tickers small {
+    margin-left: auto;
+    color: #a9b09f;
+    font-size: inherit;
+}
+
+.project-controls {
+    margin-top: 1.1rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.project-carousel .project-arrow {
+    font-size: 1.25rem;
+}
+
+.project-indicators {
+    display: flex;
+    align-items: center;
+    gap: 0.1rem;
+}
+
+.project-indicators button {
+    font-size: 0.75rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.project-indicators button[aria-current="true"] {
+    color: #a5f3fc;
+    background: rgba(103, 232, 249, 0.07);
+}
+
+.project-indicator-divider {
+    color: #566174;
+    font-size: 0.7rem;
+}
+
+@media (max-width: 520px) {
+    .project-preview {
+        min-height: 180px;
+    }
+
+    .alphascope-preview {
+        padding: 0.9rem;
+    }
+
+    .project-destination .project-status {
+        font-size: 0.55rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .project-carousel *,
+    .project-carousel *::before,
+    .project-carousel *::after {
+        transition: none;
+    }
+}

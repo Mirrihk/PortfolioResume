@@ -1,4 +1,4 @@
-﻿@page "/"
+@page "/"
 @layout MainLayout
 
 <PageTitle>Sebastian Alvarez | C# and .NET Developer</PageTitle>
@@ -80,83 +80,7 @@
                  class="feature-grid"
                  aria-label="Featured work and GitHub activity">
 
-            <article class="feature-card fluxion-card">
-                <div class="feature-card-heading">
-                    <div>
-                        <p class="card-label">Featured project</p>
-                        <h2>Fluxion</h2>
-                    </div>
-
-                    <span class="project-status">
-                        Active
-                    </span>
-                </div>
-
-                <svg class="fluxion-visual"
-                     viewBox="0 0 560 220"
-                     role="img"
-                     aria-label="Stylized mathematical graph representing Fluxion">
-
-                    <defs>
-                        <linearGradient id="fluxion-line"
-                                        x1="0"
-                                        y1="0"
-                                        x2="1"
-                                        y2="0">
-                            <stop offset="0%" stop-color="#67e8f9" />
-                            <stop offset="100%" stop-color="#818cf8" />
-                        </linearGradient>
-                    </defs>
-
-                    <g class="graph-grid">
-                        <path d="M40 30V190M120 30V190M200 30V190M280 30V190M360 30V190M440 30V190M520 30V190" />
-                        <path d="M40 30H520M40 70H520M40 110H520M40 150H520M40 190H520" />
-                    </g>
-
-                    <path class="graph-axis"
-                          d="M40 110H520M280 30V190" />
-
-                    <path class="graph-line"
-                          d="M40 145 C85 70, 125 70, 165 120 S245 175, 285 105 S365 40, 405 95 S475 165, 520 75" />
-
-                    <circle class="graph-point"
-                            cx="165"
-                            cy="120"
-                            r="5" />
-
-                    <circle class="graph-point"
-                            cx="285"
-                            cy="105"
-                            r="5" />
-
-                    <circle class="graph-point"
-                            cx="405"
-                            cy="95"
-                            r="5" />
-                </svg>
-
-                <p class="feature-description">
-                    A C# mathematics and graphics engine featuring expression
-                    parsing, algebra tools, 2D graphing, and interactive 3D
-                    surface rendering with OpenGL.
-                </p>
-
-                <ul class="card-tags"
-                    aria-label="Fluxion technologies">
-                    <li>C#</li>
-                    <li>OpenTK</li>
-                    <li>OpenGL</li>
-                    <li>Math rendering</li>
-                </ul>
-
-                <a class="card-link"
-                   href="https://github.com/Mirrihk/Fluxion"
-                   target="_blank"
-                   rel="noopener noreferrer">
-                    Explore Fluxion
-                    <span aria-hidden="true">→</span>
-                </a>
-            </article>
+            <ResumePortfolio.Components.FeaturedProjects />
 
             <article class="feature-card github-card">
                 <div class="feature-card-heading">

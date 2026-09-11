@@ -1,0 +1,146 @@
+@implements IAsyncDisposable
+@inject IJSRuntime JS
+
+<section class="feature-card project-carousel"
+         aria-roledescription="carousel"
+         aria-label="Featured projects"
+         @ref="_root">
+    <div class="project-carousel-heading">
+        <p class="card-label">Featured projects</p>
+        <button class="project-rotation" type="button" data-rotation
+                aria-label="Pause automatic project rotation">
+            <span data-rotation-label>Pause</span>
+        </button>
+    </div>
+
+    <div class="project-viewport" aria-live="off" data-viewport>
+        <article class="project-slide" data-project data-active="true"
+                 role="group" aria-roledescription="slide"
+                 aria-label="1 of 2: AlphaScope" aria-hidden="false">
+            <a class="project-destination" href="https://exotics-79c0b.web.app/"
+               target="_blank" rel="noopener noreferrer"
+               aria-label="Open AlphaScope website (opens in a new tab)">
+                <div class="feature-card-heading">
+                    <h2>AlphaScope</h2>
+                    <span class="project-status">Web app</span>
+                </div>
+
+                <div class="project-preview alphascope-preview" aria-hidden="true">
+                    <div class="alphascope-preview-top">
+                        <strong>AlphaScope<span>.</span></strong>
+                        <span>MARKET RESEARCH</span>
+                    </div>
+                    <p class="alphascope-preview-title">Find the signal.<br /><span>Skip the noise.</span></p>
+                    <div class="alphascope-preview-search">
+                        <span>Search a company or ticker</span><span>↗</span>
+                    </div>
+                    <div class="alphascope-preview-tickers">
+                        <span>AAPL</span><span>NVDA</span><span>TSLA</span><span>SPY</span>
+                        <small>Dashboard preview</small>
+                    </div>
+                </div>
+
+                <p class="feature-description">
+                    A browser-based market research dashboard for exploring
+                    stock quotes, price history, and company news.
+                </p>
+                <ul class="card-tags" aria-label="AlphaScope technologies">
+                    <li>C#</li><li>Blazor</li><li>WebAssembly</li><li>Firebase</li>
+                </ul>
+                <span class="card-link">Open AlphaScope <span aria-hidden="true">↗</span></span>
+            </a>
+        </article>
+
+        <article class="project-slide" data-project data-active="false"
+                 role="group" aria-roledescription="slide"
+                 aria-label="2 of 2: Fluxion" aria-hidden="true" inert>
+            <a class="project-destination" href="https://github.com/Mirrihk/Fluxion"
+               target="_blank" rel="noopener noreferrer"
+               aria-label="View Fluxion on GitHub (opens in a new tab)">
+                <div class="feature-card-heading">
+                    <h2>Fluxion</h2>
+                    <span class="project-status">Source code</span>
+                </div>
+
+                @* Replace this preview with a software demo when one is available. *@
+                <svg class="project-preview fluxion-visual" viewBox="0 0 560 220"
+                     role="img" aria-label="Mathematical graph representing Fluxion">
+                    <defs>
+                        <linearGradient id="fluxion-line" x1="0" y1="0" x2="1" y2="0">
+                            <stop offset="0%" stop-color="#67e8f9" />
+                            <stop offset="100%" stop-color="#818cf8" />
+                        </linearGradient>
+                    </defs>
+                    <g class="graph-grid">
+                        <path d="M40 30V190M120 30V190M200 30V190M280 30V190M360 30V190M440 30V190M520 30V190" />
+                        <path d="M40 30H520M40 70H520M40 110H520M40 150H520M40 190H520" />
+                    </g>
+                    <path class="graph-axis" d="M40 110H520M280 30V190" />
+                    <path class="graph-line" d="M40 145 C85 70, 125 70, 165 120 S245 175, 285 105 S365 40, 405 95 S475 165, 520 75" />
+                    <circle class="graph-point" cx="165" cy="120" r="5" />
+                    <circle class="graph-point" cx="285" cy="105" r="5" />
+                    <circle class="graph-point" cx="405" cy="95" r="5" />
+                </svg>
+
+                <p class="feature-description">
+                    A C# mathematics and graphics engine featuring expression
+                    parsing, algebra tools, 2D graphing, and interactive 3D
+                    surface rendering with OpenGL.
+                </p>
+                <ul class="card-tags" aria-label="Fluxion technologies">
+                    <li>C#</li><li>OpenTK</li><li>OpenGL</li><li>Math rendering</li>
+                </ul>
+                <span class="card-link">View Fluxion on GitHub <span aria-hidden="true">↗</span></span>
+            </a>
+        </article>
+    </div>
+
+    <div class="project-controls" role="group" aria-label="Project navigation">
+        <button class="project-arrow" type="button" data-previous aria-label="Previous project">
+            <span aria-hidden="true">↑</span>
+        </button>
+        <div class="project-indicators">
+            <button type="button" data-project-index="0" aria-label="Show AlphaScope" aria-current="true">
+                <span aria-hidden="true">01</span>
+            </button>
+            <span class="project-indicator-divider" aria-hidden="true">/</span>
+            <button type="button" data-project-index="1" aria-label="Show Fluxion">
+                <span aria-hidden="true">02</span>
+            </button>
+        </div>
+        <button class="project-arrow" type="button" data-next aria-label="Next project">
+            <span aria-hidden="true">↓</span>
+        </button>
+    </div>
+</section>
+
+@code {
+    private const int RotationIntervalMs = 6000;
+    private ElementReference _root;
+    private IJSObjectReference? _module;
+    private bool _disposed;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+
+        var module = await JS.InvokeAsync<IJSObjectReference>("import", "./js/featured-projects.js");
+        if (_disposed)
+        {
+            await module.DisposeAsync();
+            return;
+        }
+
+        _module = module;
+        await module.InvokeVoidAsync("initialize", _root, RotationIntervalMs);
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        _disposed = true;
+        if (_module is null) return;
+
+        await _module.InvokeVoidAsync("dispose", _root);
+        await _module.DisposeAsync();
+    }
+}
