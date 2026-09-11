@@ -4,6 +4,7 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <DefaultItemExcludes>$(DefaultItemExcludes);artifacts/**;public/**;firebase-dist/**</DefaultItemExcludes>
     <UserSecretsId>809b89b0-65fc-4e43-850e-6467435367b8</UserSecretsId>
   </PropertyGroup>
 
